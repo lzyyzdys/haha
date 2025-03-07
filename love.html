@@ -62,7 +62,7 @@
 
     .animated-text {
       position: relative;
-      overflow: hidden;
+
     }
 
     .line {
@@ -156,6 +156,7 @@
   function renderText() {
     const container = document.getElementById('text-container')
     const lines = poem.split('')
+    lines.unshift('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
 
     lines.forEach((line, index) => {
       const lineDiv = document.createElement('div')
@@ -180,7 +181,7 @@
     // 添加流星彩蛋
     setInterval(() => {
       if (Math.random() > 0.95) createShootingStar()
-    }, 5000)
+    }, 3000)
 
     // 纸张质感背景
     document.body.style.background = `
