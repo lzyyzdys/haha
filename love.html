@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>诗意文字渐现效果</title>
+  <!-- 引入Google优雅字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Great+Vibes&display=swap"
+        rel="stylesheet"
+  >
+
+  <style>
+    /* 星空效果 */
+    .stars {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: blink 1.5s infinite alternate;
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 0.3;
+        transform: scale(0.1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+      100% {
+        opacity: 0.5;
+        transform: scale(0.9);
+      }
+    }
+
+    body {
+      background: #000000;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .poetry-container {
+      width: 100%;
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.2rem;
+      color: #ffffff;
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeIn 1.5s 0.5s forwards;
+    }
+
+    .animated-text {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .line {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      -webkit-animation: fade-in 0.1s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+      animation: fade-in 0.1s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+      white-space: pre-wrap; /* 保留换行 */
+    }
+
+    @keyframes textAppear {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @-webkit-keyframes fade-in {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fade-in {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+
+    /* 添加装饰性下划线 */
+    .line::after {
+    //content: ''; //position: absolute; //bottom: -5px; //left: 0; //width: 0; //height: 2px; //background: rgb(80, 137, 216); //transition: width 0.1s ease;
+    }
+
+    .line.active::after {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="poetry-container">
+  <div class="animated-text" id="text-container"></div>
+</div>
+
+<script>
+  const poem = `杨梦娟，虽然相处的时光短暂但这字段时间很相识的每一帧都像加了柔光滤镜。记得那次我情绪低落你陪着我听我诉说着苦水还一边给予关怀鼓励的言语！你就像一位天使一样给了我向前冲的勇气让我永不挫败，也似阴暗中的山洞中出现的一束光亮。这些温暖让我开始期待更多的可能———不是突然的心血来潮而是这些天的相处让我一步一步的肯定，感受到了你的贴心、善良、温柔、鬼精鬼精、善解人意。也了解你的过去经历，让我更加想在未来的日志陪着你一直走下去，作为你的伴侣！ 你愿意吗？   \n\n—— 梁泽宇`
+
+  // 生成星空
+  function createStars() {
+    const container = document.getElementById('stars')
+    const starCount = 77 // 星数象征相遇天数
+
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement('div')
+      star.className = 'star'
+
+      // 随机属性
+      const size = Math.random() * 3 + 1
+      const x = Math.random() * 100
+      const y = Math.random() * 100
+      const delay = Math.random() * 2
+
+      star.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}%;
+                    top: ${y}%;
+                    animation-delay: ${delay}s;
+                    filter: blur(${size / 3}px);
+                `
+
+      container.appendChild(star)
+    }
+  }
+
+  function renderText() {
+    const container = document.getElementById('text-container')
+    const lines = poem.split('')
+
+    lines.forEach((line, index) => {
+      const lineDiv = document.createElement('div')
+      lineDiv.className = 'line'
+      lineDiv.style.animationDelay = `${index * 0.1}s`
+      lineDiv.innerHTML = line.replace(/\s/g, '&nbsp;')
+
+      // 添加交互效果
+      lineDiv.addEventListener('animationend', () => {
+        lineDiv.classList.add('active')
+      })
+
+      container.appendChild(lineDiv)
+    })
+  }
+
+  // 初始化执行
+  window.addEventListener('DOMContentLoaded', () => {
+    createStars()
+    renderText()
+
+    // 添加流星彩蛋
+    setInterval(() => {
+      if (Math.random() > 0.95) createShootingStar()
+    }, 5000)
+
+    // 纸张质感背景
+    document.body.style.background = `
+                linear-gradient(to right,
+                #000000 0%,
+                #000000 50%,
+                rgba(240,231,216,0.1) 100%),
+                url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="%23ffffff" opacity="0.2" d="M49,-32C58.7,-14.7,58.7,14.7,49,32C39.3,49.3,19.7,54.7,-3.5,56.5C-26.6,58.4,-53.3,56.8,-61.5,44C-69.8,31.3,-59.7,7.5,-49.3,-14.5C-38.9,-36.5,-28.1,-56.7,-9.4,-60.3C9.3,-63.8,27.1,-50.6,49,-32Z"/>
+                </svg>')`
+  })
+
+  // 随机生成流星
+  function createShootingStar() {
+    const meteor = document.createElement('div')
+    meteor.className = 'meteor'
+    document.body.appendChild(meteor)
+
+    setTimeout(() => meteor.remove(), 2000)
+  }
+</script>
+</body>
+</html>
